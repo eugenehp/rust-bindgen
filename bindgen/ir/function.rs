@@ -192,6 +192,8 @@ pub enum Abi {
     CUnwind,
     /// The "system" ABI.
     System,
+    /// The "swift" ABI.
+    Swift,
 }
 
 impl FromStr for Abi {
@@ -200,6 +202,7 @@ impl FromStr for Abi {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
             "C" => Ok(Self::C),
+            "swift" => Ok(Self::Swift),
             "stdcall" => Ok(Self::Stdcall),
             "efiapi" => Ok(Self::EfiApi),
             "fastcall" => Ok(Self::Fastcall),
@@ -218,6 +221,7 @@ impl std::fmt::Display for Abi {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match *self {
             Self::C => "C",
+            Self::Swift => "swift",
             Self::Stdcall => "stdcall",
             Self::EfiApi => "efiapi",
             Self::Fastcall => "fastcall",
@@ -297,6 +301,7 @@ fn get_abi(cc: CXCallingConv) -> ClangAbi {
     match cc {
         CXCallingConv_Default => ClangAbi::Known(Abi::C),
         CXCallingConv_C => ClangAbi::Known(Abi::C),
+        CXCallingConv_Swift => ClangAbi::Known(Abi::Swift),
         CXCallingConv_X86StdCall => ClangAbi::Known(Abi::Stdcall),
         CXCallingConv_X86FastCall => ClangAbi::Known(Abi::Fastcall),
         CXCallingConv_X86ThisCall => ClangAbi::Known(Abi::ThisCall),
